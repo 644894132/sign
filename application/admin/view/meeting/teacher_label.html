@@ -1,0 +1,41 @@
+{include file="common/head"/}
+<style type="text/css">
+  .active { background-color:green; }
+</style>
+ <div class="layui-form-item">
+  <br>
+  &nbsp;&nbsp;&nbsp;&nbsp;<span class="layui-btn layui-btn-radius layui-btn-disabled"><b style="color:#000000">老师标签</b><hr>  
+  <table class="layui-table">
+    <thead>
+     <tr>
+       <td>标签名称</td>
+     </tr>
+    </thead>
+    <thead>
+    {volist name="data.lists" id="vo"}
+     <tr>
+      <td><a class="layui-btn teacher_label" href="{:url('Meeting/label_assign')}?MeetingID={$MeetingID}&labelid={$vo.id}" target="iframeb">
+      <span>{$vo.labels}</span></a>
+      </td>
+     </tr>
+    {/volist} 
+    </thead>
+  </table>
+ </div>
+{include file="common/foot"/}     
+<script type="text/javascript"> 
+  $(function(){
+    $(".teacher_label").each(function(index){
+      let location = index + 1;
+      if (location == 1) {
+       $(this).addClass("active").find("span").trigger("click"); 
+        return false;
+      }     
+    })
+    $("a.teacher_label").off('click').on("click", function() {
+      $("a.teacher_label").removeClass("active");
+      $(this).addClass("active");
+    })
+  });
+</script>
+

@@ -1,0 +1,114 @@
+{include file="common/head"/}
+<div class="layui-form-item top">
+ <div class="header">
+   <span>会议管理</span>
+   {if condition="$permission eq 3"}
+   {else /}
+    <button class="layui-btn" type="button" style="float:right;" onclick="meeting_add('',2)"><i class="layui-icon">&#xe608;</i>创建会议</button>
+   {/if}
+   <div></div>
+ </div> 
+ <br> 
+<div class="layui-form-item">
+    <div class="layui-form layui-form-pane" style="float:left;">
+    <div class="layui-form-item">
+    <label class="layui-form-label" style="margin-left:30px;">快捷查询</label>
+    <div class="layui-input-inline">
+     <input type="text" class="layui-input" value="{$data.seek}" id="seek" style="width:320px;" placeholder="请输入会议编号/标题/会议负责人/主办单位">
+    </div>
+    <button class="layui-btn" style="margin-left:150px;" onclick="searchs()"><i class="layui-icon">&#xe615;</i>搜索</button>
+    </div>  
+    </div>
+</div> 
+</div><br><br><br><br><br><hr>
+<table class="layui-table">
+  <thead>
+   <tr>
+     <td>会议编号</td>
+     <td>会议标题</td>
+     <td>邀请人数</td> 
+     <td>会议开始时间</td>
+     <td>会议结束时间</td> 
+     <td>负责人电话</td>      
+     <td>会议负责人</td>     
+     <td>会议主办单位</td>
+     <td>操作</td>
+   </tr>
+  </thead>
+  <thead>
+   {volist name="data.data.lists"  id="vo"}
+   <tr>
+     <td>{$vo.id}</td>
+     <td><a href="javascript:;" onclick="meeting_add({$vo.id}, 3)">{$vo.title}</a></td>
+     <td><a href="{:url('Meeting/invite_teacher_info')}?op=1&MeetingID={$vo.id}">{$vo.meeting_count}</a></td>
+     <td>{:date('Y-m-d H:i',$vo.start)}</td>
+     <td>{:date('Y-m-d H:i',$vo.over)}</td>
+     <td>{$vo.telephone}</td>        
+     <td>{$vo.attn}</td>      
+     <td>{$vo.unit}</td> 
+    <td>
+    <button class="layui-btn" title="编辑" onclick="meeting_add({$vo.id}, 1)"><i class="layui-icon">&#xe642;</i></button> 
+    <button class="layui-btn layui-btn-danger" title="删除" onclick="remove({$vo.id})"><i class="layui-icon">&#xe640;</i></button>
+    <a href="{:url('Meeting/homepage')}?MeetingID={$vo.id}" style="text-decoration:none" class="layui-btn layui-btn-normal" title="邀请"><i class="layui-icon">&#xe654;</i></a>
+    </td>
+   </tr>
+   {/volist} 
+  </thead>
+</table> 
+<div id="pages" style="text-align:center"></div> 
+{include file="common/foot"/}
+<script type="text/javascript"> 
+     //引用layui主键
+    layui.use(['layer','laypage'],function(){
+      layer =layui.layer;
+      //引用jquery
+       $ =layui.jquery;
+       laypage =layui.laypage;
+
+       laypage.render({
+          elem: 'pages' //注意，这里的 test1 是 ID，不用加 # 号
+          ,count:{$data.data.total}
+          ,limit:{$data.pageSize}
+          ,curr:{$data.page}
+          ,jump: function(obj, first){              
+              //首次不执行
+              if(!first){
+                //实现搜索跳转和分页的统一
+                searchs(obj.curr);
+              }
+            }
+        });
+    });
+       //搜索
+       function searchs(curpage){
+        //消除第一行空格
+        var seek =$.trim($('#seek').val());
+        //有wd就加载至分页后面
+        var url ="{:url('Meeting/index')}?page="+curpage;
+        //var_dump(url);
+        if(seek){
+          //将搜索到的内容拼接至分页后面
+          url+='&seek='+seek;
+        }
+        //页面跳转，搜索和分页跳转的统一
+        window.location.href =url;
+    }
+      //删除
+    function remove(id,Account){
+      //询问框
+      layer.confirm('确认要删除吗?',{
+        icon :8,
+        btn: ['确定','取消'] //按钮
+      }, function(){
+        //提交数据，跳转页面
+        $.post('{:url("Meeting/delete")}',{'id':id,'Account':Account},function(res){
+          if(res.code>0){
+            layer.alert(res.msg,{icon:6});
+          }else{
+            layer.msg(res.msg);
+            setTimeout(function(){window.location.reload();},1000);
+          }
+        },'json');
+      });
+    } 
+</script>

@@ -1,0 +1,47 @@
+{include file="common/head"/}
+  <div class="header">
+      <span>请假人员列表</span>
+        <button class="layui-btn"  style="float:right;" onclick="back()"><i class="layui-icon">&#xe608;</i>返回</button>
+      <div></div>
+     </div><br>
+   <div>
+      <table class="layui-table" style="margin-left:20px;margin-right:20px;">
+         <thead>
+             <tr>
+               <td>个人编号</td>   
+               <td>会议编号</td>           
+               <td>姓名</td>
+               <td>性别</td>
+               <td>状态</td>
+               <td>请假时间</td>
+             </tr>
+         </thead>
+         <thead>
+             {volist name="data.lists" id="vo"}
+              <tr>
+               <td>{$vo.Account}</td> 
+               <td>{$vo.number}</td>
+               <td>{$vo.Name}</td>
+               <td>{$vo.Sex==1?'<span>男</span>':'<span>女</span>'}</td> 
+               {if condition="$vo.sign_status eq 0"} 
+               <td style="color:grey">未签到</td>
+               {elseif condition="$vo.sign_status eq 1"}
+               <td style="color:green">已签到</td>
+               {elseif condition="$vo.sign_status eq 2"}
+               <td style="color: red;">已请假</td>
+               {elseif condition="$vo.sign_status eq 3"}
+               <td>迟到</td>
+               {/if}
+               <td>{:date('Y-m-d H:i',$vo.sign_time)}</td>          
+               <!-- <td>
+                <button class="layui-btn" onclick="sign_remove()"  title="删除"><i class="layui-icon">&#xe640;</i></button>
+               </td> -->
+             </tr>
+             {/volist}
+         </thead>
+      </table>
+   </div>
+{include file="common/foot"/}
+<script type="text/javascript">
+      
+</script>

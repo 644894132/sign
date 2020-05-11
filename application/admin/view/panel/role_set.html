@@ -1,0 +1,70 @@
+{include file="common/head"/}
+  <form class="layui-form">
+    <div class="layui-layout layui-layout-admin">  
+     <div><br>   
+       <table>
+          <thead>
+             <tr>          
+               <td>
+                <div class="layui-form-item">
+                 <label class="layui-form-label">个人账号</label>
+                <div class="layui-input-inline">
+                 <input type="text" name="Account" class="layui-input" placeholder="请输入个人账号" value="{$data.Account}" readonly>        
+                </div> 
+                </div>
+               </td>         
+             </tr>
+          </thead>
+           <thead>
+             <tr>                      
+               <td>
+                <div class="layui-form-item">
+                 <label class="layui-form-label">姓名</label>
+                <div class="layui-input-inline">               
+                 <input type="text" name="Name"  class="layui-input" placeholder="请输入姓名" value="{$data.Name}" disabled>
+                </div> 
+                </div>
+               </td>            
+             </tr>
+          </thead>        
+          <thead>
+             <tr>                        
+               <td>
+                <div class="layui-form-item">
+                 <label class="layui-form-label">角色指定</label>
+                   <div class="layui-input-inline">
+                     <select name="id">
+                         {volist name="groups" id="vo"}
+                         	{if condition="$vo.id eq $data.Roles2Binary"}
+                         		<option value="{$vo.id}" selected>{$vo.title}</option>
+                         		{else /}
+                         		<option value="{$vo.id}">{$vo.title}</option>
+							            {/if}
+                         {/volist} 
+                     </select>
+                   </div>
+                 </div> 
+               </td>         
+             </tr>
+          </thead>        
+        </table> 
+         <button type="button" class="layui-btn layui-btn-radius layui-btn-normal" style="margin-left:120px" onclick="role_set_save()">保存</button>
+        </div>              
+     </div>
+    </div>
+  </form>  
+{include file="common/foot"/}
+<script type="text/javascript"> 
+       //保存
+       function role_set_save(){
+       	 var id =parseInt($('input[name="id"]').val());
+        $.post("{:url('Panel/role_set_save')}",$('form').serialize(),function(res){
+       if(res.code>0){
+        layer.alert(res.msg,{icon:2});
+      }else{
+        layer.msg(res.msg);
+        setTimeout(function(){parent.window.location.reload()},1000);
+      }      
+    },'json');
+  }
+</script>

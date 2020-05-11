@@ -1,0 +1,71 @@
+{include file="common/head"/}
+      <table class="layui-table">
+         <thead>
+           {volist name="data.lists" id="vo"}
+            <tr>
+              <th>用户名</th>
+              <th>{$vo.Account}</th>
+            </tr>
+            <tr>
+              <th>真实姓名</th>
+              <th>{$vo.Name}</th>
+            </tr>
+            <tr>
+              <th>性别</th>
+              <th>{$vo.Sex==1?'男':'女'}</th>
+            </tr>
+            <tr>
+              <th>出生日期</th>
+              <th>{$vo.DateOfBirth}</th>
+            </tr>
+            <tr>
+              <th>邮箱</th>
+              <th>{$vo.Email}</th>
+            </tr>
+            <tr>
+              <th>电话</th>
+              <th>{$vo.Aphone}</th>
+            </tr>
+            <tr>
+              <th>籍贯</th>
+              <th>{$vo.NativePlace}</th>
+            </tr>
+            <tr>
+              <th>民族</th>
+              <th>{$vo.FamilyName}</th>
+            </tr>
+             <tr>
+              <th>政治面貌</th>
+              <th>{$vo.PoliticalOutlook}</th>
+            </tr>
+            <tr>
+              <th>登录时间</th>
+              <th>{$vo.LoginTime}</th>
+            </tr>
+            <tr>
+              <th>登录地点</th>
+              <th>{$vo.LoginAddress}</th>
+            </tr>
+            <tr>
+              <th>登录IP</th>
+              <th>{$vo.LoginIP}</th>
+            </tr>
+            <tr>
+              <th>角色</th>
+              {if condition="$vo.Roles2Binary eq 1"}
+              <th style="color:#FF00FF">超级管理员</th>
+              {elseif condition="$vo.Roles2Binary eq 2"}
+              <th style="color:#DB7093">管理员</th>
+              {elseif condition="$vo.Roles2Binary eq 3"}
+              <th>普通用户</th>
+              {elseif condition="$vo.Roles2Binary eq 4"}
+              <th style="color:#FFD700">开发人员</th>
+              {/if}
+            </tr>
+            {/volist}           
+         </thead>
+      </table>
+{include file="common/foot"/}
+<script type="text/javascript">
+      
+</script>

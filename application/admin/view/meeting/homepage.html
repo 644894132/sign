@@ -1,0 +1,20 @@
+{include file="common/head"/}
+ <div class="header">
+  <span>标签和人员详细信息</span>    
+  <div></div>
+ </div>
+ <div  class="layui-form-item">
+  <span>
+    <iframe id="iframeA" name="iframea" class="iframea" src="{:url('Meeting/teacher_label')}?MeetingID={$MeetingID}" height="780px" width="15%" frameborder="no"  scrolling="auto" style="padding:10px;"></iframe>
+  </span>
+  <span>
+    <iframe id="iframeB" name="iframeb" class="iframeb" src="{:url('Meeting/label_assign')}?MeetingID={$MeetingID}" height="780px" width="40%" frameborder="no"  style="padding:10px;" scrolling="auto"></iframe>
+  </span> 
+  <span>
+    <iframe id="iframeC" name="iframec" class="iframec" src="{:url('Meeting/invite_teacher_info')}?MeetingID={$MeetingID}" height="780px" width="40%" frameborder="no" style="padding:10px;" scrolling="auto"></iframe>
+  </span>
+ </div>
+{include file="common/foot"/}
+<script type="text/javascript"> 
+    
+</script>

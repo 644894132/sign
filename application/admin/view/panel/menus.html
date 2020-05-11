@@ -1,0 +1,44 @@
+{include file="common/head"/}
+<div class="header">
+<span>栏目展示</span>  
+ <div></div>
+ </div> 
+<div></div>  
+</div>
+<form class="layui-form">
+  <table class="layui-table">
+    <thead>
+      <tr>
+        <th>编号</th>
+        <th>图标</th>              
+        <th>栏目名称</th>        
+        <th>控制器</th>                              
+        <th>方法</th>
+      </tr>
+    </thead>
+    <thead>
+      {volist name="result" key="key" id="vo"} 
+      <tr>
+        <td style="color:red"><b>{$vo.mid}</b></td>
+        <td class="layui-icon">{$vo.icon}</td>       
+        <td style="color:red">{$vo.title}</td>
+        <td></td>
+        <td></td>
+      </tr> 
+      {volist name="vo.children" id="cvo"}
+      <tr>        
+        <td>{$cvo.mid}</td>
+        <td></td>       
+        <td>{$cvo.title}</td>
+        <td>{$cvo.controller}</td>
+        <td>{$cvo.method}</td>
+      </tr>  
+      {/volist}    
+    {/volist}
+    </thead>
+  </table>
+</form>
+{include file="common/foot"/}    
+<script type="text/javascript">
+  
+</script>

@@ -1,0 +1,45 @@
+{include file="common/head"/}
+<form class="layui-form">
+  <input type="hidden" name="id" value="{$role.id}">
+   <div class="layui-form-item">
+      <label class="layui-form-label">角色名称</label>
+      <div class="layui-input-block">
+        <input type="text" class="layui-input" name="title" value="{$role.title}">  
+      </div>
+   </div>
+   <div class="layui-form-time">
+      <label class="layui-form-label">权限菜单</label>
+      <!-- 渲染效果 -->
+      {volist name="menus" id="vo"}
+      <hr/>
+      <div class="layui-input-block">
+        <input type="checkbox" name="menu[{$vo.mid}]" lay-skin="primary" title="{$vo.title}" {:isset($role['rights']) && $role['rights'] && in_array($vo.mid,$role['rights'])?'checked':''}>
+        <hr>
+        {volist name="vo.children" id="cvo"}
+         <input type="checkbox" name="menu[{$cvo.mid}]" lay-skin="primary" title="{$cvo.title}" {:isset($role['rights']) && $role['rights'] && in_array($cvo.mid,$role['rights'])?'checked':''}>
+        {/volist}
+    </div>
+    {/volist}
+   </div>
+</form>
+<div class="layui-form-item" style="margin-top:10px;">
+<div class="layui-input-block">
+  <button class="layui-btn" onclick="save_role()">保存</button>
+</div>
+</div>
+{include file="common/foot"/}
+<script type="text/javascript">
+    //保存
+    function save_role(){
+      var name =$.trim($('input[name ="name"]').val());
+      $.post("{:url('Panel/save_role')}",$('form').serialize(),function(res){
+          if(res.code >0){
+            layer.msg(res.msg,{'icon':2});
+          }else{
+            layer.msg(res.msg,{'icon':1});
+            setTimeout(function(){parent.window.location.reload();
+            },1000);
+          }
+      },'json');
+    }
+</script>

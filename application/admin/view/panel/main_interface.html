@@ -1,0 +1,16 @@
+{include file="common/head"/}
+<div class="header">
+  <span>主界面</span>    
+  <div></div>
+ </div>
+   <div class="layui-form-item"> 
+	  <span>
+	    <iframe id="iframeA" name="iframea" src="{:url('Panel/label_maintain')}?labelid={$labelid}"  height="800px" width="47%" style="padding:10px;" frameborder="no" scrolling="atuo"></iframe>
+	  </span>
+	  <span>
+	    <iframe id="iframeB" name="iframeb" src="{:url('Panel/assign_personnel')}?labelid={$labelid}" height="800px" width="50%" style="padding:10px;" frameborder="no" scrolling="atuo"></iframe>
+	   </span>
+  </div>   
+{include file="common/foot"/}
+<script type="text/javascript">
+</script>

@@ -1,0 +1,221 @@
+{include file="common/head"/}
+  <form class="layui-form">
+     <input type="hidden" name="id" value="{$data.item.id}">
+    <div class="layui-layout layui-layout-admin">  
+     <div><br>   
+       <table>
+         <thead>
+          <tr>          
+           <td>
+           {if condition="$type eq 3"}
+            <div class="layui-form-item">
+             <label class="layui-form-label">会议编号</label>
+            <div class="layui-input-inline">               
+             <input type="text" name="id" class="layui-input" value="{$data.item.id}" disabled>                            
+            </div> 
+            </div>
+            {else /}
+
+            </div> 
+            </div>
+            {/if}
+           </td>         
+          </tr>
+         </thead>
+          <thead>
+             <tr>          
+               <td>
+                <div class="layui-form-item">
+                 <label class="layui-form-label">会议的标题</label>
+                <div class="layui-input-inline">
+                {if condition="$type eq 3"}
+                 <input type="text" name="title" class="layui-input" placeholder="请输入会议的标题" value="{$data.item.title}" disabled> 
+                 {else /}
+                 <input type="text" name="title" class="layui-input" placeholder="请输入会议的标题" value="{$data.item.title}">
+                {/if}
+                </div> 
+                </div>
+               </td>         
+             </tr>
+          </thead>
+          <thead>
+             <tr>          
+               <td>
+               {if condition="$type eq 3"}
+                <div class="layui-form-item">
+                 <label class="layui-form-label">邀请人数</label>
+                <div class="layui-input-inline">               
+                 <input type="text" name="meeting_count" class="layui-input" value="{$data.item.meeting_count}" disabled>                            
+                </div> 
+                </div>
+                {else /}
+
+                </div> 
+                </div>
+                {/if}
+               </td>         
+             </tr>
+          </thead>
+           <thead>
+             <tr>                      
+               <td>
+                <div class="layui-form-item">
+                 <label class="layui-form-label">会议开始时间</label>
+                <div class="layui-input-inline">
+                {if condition="$type eq 3"}
+                 <input type="text" name="start" id="input-start" class="layui-input" placeholder="请选择会议开始时间" value="{:date('Y-m-d H:i',$data.item.start)}" disabled>
+                {else /}
+                 <input type="text" name="start" id="input-start" class="layui-input" placeholder="请选择会议开始时间" value="{:date('Y-m-d H:i',$data.item.start)}">
+                 {/if}
+                </div> 
+                </div>
+               </td>            
+             </tr>
+          </thead>
+          <thead>
+             <tr>                     
+               <td>
+                <div class="layui-form-item">
+                 <label class="layui-form-label">会议时长(分钟)</label>
+                <div class="layui-input-inline">
+                {if condition="$type eq 3"}
+                 <input type="text" name="duration" class="layui-input" placeholder="请选择会议时长" value="{$data.item.duration}" disabled>
+                {else /} 
+                 <input type="text" name="duration" class="layui-input" placeholder="请选择会议时长" value="{$data.item.duration}">
+                {/if} 
+                </div> 
+                </div>
+               </td>         
+             </tr>
+          </thead>
+          <thead>
+           <tr>                        
+             <td>
+              <div class="layui-form-item">
+               <label class="layui-form-label">会议主办单位(学院)</label>
+              <div class="layui-input-inline">
+              {if condition="$type eq 3"}
+               <select name="unit" id="units" lay-filter="loadUser" disabled>
+               {volist name="res" id="vo"}
+                  <option value="{$vo.Num}">{$vo.Name}</option>
+               {/volist}
+              </select>
+              {else /} 
+              <select name="unit" id="units" lay-filter="loadUser">
+               {volist name="res" id="vo"}
+                  <option value="{$vo.Num}">{$vo.Name}</option>
+               {/volist}
+              </select>
+              {/if}
+              </div> 
+              </div>
+             </td>         
+           </tr>
+          </thead>
+
+          <thead>
+             <tr>          
+               <td>
+                <div class="layui-form-item">
+                 <label class="layui-form-label">会议负责人</label>
+                <div class="layui-input-inline">
+                {if condition="$type eq 3"}
+                 <select name="attn" id="attns">
+                 {volist name="result" id="vo"}
+                   <option value="{$vo.Name}">{$vo.Name}</option>
+                 {/volist}
+                 </select>
+                {else /} 
+                 <select name="attn" id="attns">
+                 {volist name="result" id="vo"}
+                   <option value="{$vo.Name}">{$vo.Name}</option>
+                 {/volist}
+                 </select> 
+                {/if}
+                </div> 
+                </div>
+               </td>         
+             </tr>
+          </thead>         
+          <thead>
+             <tr>                       
+               <td>
+                <div class="layui-form-item">
+                 <label class="layui-form-label">负责人电话</label>
+                <div class="layui-input-inline">
+                {if condition="$type eq 3"}
+                 <input type="text" maxlength="11" name="telephone" class="layui-input" placeholder="请输入联系人电话" value="{$data.item.telephone}" disabled>
+                {else /} 
+                 <input type="text" maxlength="11" name="telephone" class="layui-input" placeholder="请输入联系人电话" value="{$data.item.telephone}"> 
+                {/if}
+                </div> 
+                </div>
+               </td>         
+             </tr>
+          </thead>  
+          <thead>
+             <tr>                        
+               <td>
+               {if condition="$type eq 3"}
+                <div class="layui-form-item">
+                 <label class="layui-form-label">会议状态</label>
+                <div class="layui-input-inline"> 
+                {if condition="$data.item.condition eq 0 "}              
+                 <input type="text"  name="condition" class="layui-input" style="color:#4169E1" value="未开始" disabled>
+                {elseif condition="$data.item.condition eq 1 "}  
+                <input type="text"  name="condition" class="layui-input" style="color:#006400" value="进行中" disabled>
+                {elseif condition="$data.item.condition eq 2 "}  
+                <input type="text"  name="condition" class="layui-input" style="color:red" value="已结束" disabled>
+                {/if}
+                {else /} 
+
+                {/if}
+                </div> 
+                </div>
+               </td>         
+             </tr>
+          </thead>        
+       </table> 
+        <div class="layui-form-item">
+        {if condition="$type eq 3"}
+         
+        {else /}  
+         <button type="button" class="layui-btn layui-btn-radius layui-btn-normal" style="margin-left:120px" onclick="save()">保存</button>
+        {/if}
+        </div>              
+     </div>
+    </div>
+  </form>  
+{include file="common/foot"/}
+<script type="text/javascript">
+layui.use(['layer','form'],function(){
+      $ =layui.jquery;
+  layer =layui.layer;
+   form =layui.form;
+
+  form.on('select(loadUser)',function(data){
+    var num = data.value;
+    console.log(data.elem);
+    $.post("{:url('Meeting/loadUser')}",{num:num},function(res){
+      res = JSON.parse(res);    
+      $("#attns").empty();
+      $(res).each(function(index) {
+        $("#attns").append('<option value="'+res.Account+'">'+res.dname+'</option>');
+        console.log(res);
+        form.render('select');       
+      });
+    });
+  }); 
+}); 
+  //保存
+  function save(){
+    $.post("{:url('Meeting/save')}",$('form').serialize(),function(res){
+     if(res.code>0){
+      layer.alert(res.msg,{icon:2});
+    }else{
+      layer.msg(res.msg);
+      setTimeout(function(){parent.window.location.reload()},1000);
+    }      
+  },'json');
+  }
+</script>

@@ -1,0 +1,97 @@
+{include file="common/head"/}
+ <style type="text/css">
+  .top{width: 100%;height: 60px;background: white;z-index: 9999;position: fixed;top: 0;}
+ </style>
+  <div class="layui-form-item top">
+  <br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="layui-btn layui-btn-radius layui-btn-disabled"><b style="color:#000000">标签指定老师列表</b></span>  
+<button class="layui-btn layui-btn-lg"  style="float:right;margin-right:20px" onclick="invitation()"><i class="layui-icon">&#xe654;</i>邀请</button><br><br>
+<div class="layui-form layui-form-pane" style="float:left;">
+<div class="layui-form-item">
+<label class="layui-form-label" style="margin-left:30px;">快捷查询</label>
+<div class="layui-input-inline">
+ <input type="text" class="layui-input" value="{$data.seek}" id="seek" style="width:320px;"  placeholder="请输入账号/姓名">
+</div>
+<button class="layui-btn" type="button" style="margin-left:150px;" onclick="searchs()"><i class="layui-icon">&#xe615;</i>搜索</button>
+</div>  
+</div>
+ </div><br><br><br><br><br><br><br><hr>
+  <table class="layui-table">
+    <thead>
+     <tr>
+       <td>
+        <input type="checkbox" name="claimCase[]" id="all" onclick="selectAll(this)">
+       </td>
+       <td>个人编号</td>
+       <td>姓名</td>
+       <td>性别</td>        
+     </tr>
+    </thead>
+    <thead>
+    {volist name="data.lists" id="vo"}
+     <tr>
+      <td>
+       {if condition="empty($vo.exists)"}
+       <input type="checkbox" class="checkAll" name="checkAll[]" value="{$vo.Account},{$vo.ClassNum}" onclick="selectAll(this)" >
+       {else /}     
+       <input type="checkbox" name="checkAll[]" checked  disabled>
+       {/if}
+      </td>
+      <td>{$vo.Account}</td>
+      <td>{$vo.Name}</td>
+      <td>{$vo.Sex==1?'<span>男</span>':'<span>女</span>'}</td>
+     </tr>
+    {/volist}
+   </thead>
+  </table>    
+<div id="pages" style="text-align:center"></div>   
+{include file="common/foot"/}     
+<script type="text/javascript">
+    //搜索
+   function searchs(curpage){
+    let labelid = "{$labelid}";
+    //消除第一行空格
+    var seek =$.trim($('#seek').val());
+    //有wd就加载至分页后面
+    // var url ="/admin.php/admin/Meeting/label_assign?page="+curpage;
+    var url ="{:url('Meeting/label_assign')}?labelid="+labelid+"&page="+curpage;
+    console.log(labelid);
+    if(seek){
+      //将搜索到的内容拼接至分页后面
+      url+='&seek='+seek;
+    }
+    //页面跳转，搜索和分页跳转的统一
+    window.location.href =url;
+  } 
+  //邀请
+   function invitation(){
+    var arr = [];
+    var id ='{$MeetingID}';
+    var labelid ='{$labelid}';
+   /* console.log(id);
+    return ;*/
+  let x = 0;
+  $("input.checkAll").each(function(index){
+    if($(this).prop("checked")) {
+      //console.log(index+$(this).val());
+      $val = $(this).val();
+      arr[x++] = $val;
+    }
+  });
+  /*console.log(arr);
+   return ;*/
+     $.post("{:url('Meeting/save_invite')}",{'checkAll':arr,'id':id,'labelid':labelid},function(res){       
+      if(res.code>0){
+        layer.alert(res.msg,{icon:2});
+      }else{
+            layer.msg(res.msg);
+             setTimeout(function(){window.location.reload();},1000);
+            //添加只刷新iframeC页面
+            let iframe = $("#iframeC", window.parent.document);
+            iframe.attr("src", iframe.attr("src"));
+            // parent.iframeC.location.reload();
+            // setTimeout(function(){window.location.reload();},1000);
+        }        
+     },'json');
+   }
+</script>     

@@ -1,0 +1,49 @@
+{include file="common/head"/}
+<div style="text-align:center;">
+   <h1>欢迎使用会议管理系统</h1>
+</div><br><br><br><br><br>
+
+<table class="layui-table">
+ <thead>
+   {volist name="data.lists" id="vo"}
+    <tr>
+      <th>用户名</th>
+      <th>{$vo.Account}</th>
+    </tr>
+    <tr>
+      <th>真实姓名</th>
+      <th>{$vo.Name}</th>
+    </tr>
+    <tr>
+      <th>角色</th>
+      {if condition="$vo.Roles2Binary eq 1"}
+      <th style="color:#FF00FF">超级管理员</th>
+      {elseif condition="$vo.Roles2Binary eq 2"}
+      <th style="color:#DB7093">管理员</th>
+      {elseif condition="$vo.Roles2Binary eq 3"}
+      <th>普通用户</th>
+      {/if}
+    </tr>
+    <tr>
+      <th>登录时间</th>
+      <th>{:date('Y-m-d H:i',$vo.LoginTime)}</th>
+    </tr>
+    <tr>
+      <th>退出登录时间</th>
+      <th>{:date('Y-m-d H:i',$vo.LoginoutTime)}</th>
+    </tr>
+    <tr>
+      <th>登录地点</th>
+      <th>{$vo.LoginAddress}</th>
+    </tr>
+    <tr>
+      <th>登录IP</th>
+      <th>{$vo.LoginIP}</th>
+    </tr>
+    {/volist}
+ </thead>
+</table>
+{include file="common/foot"/}
+<script type="text/javascript">
+      
+</script>

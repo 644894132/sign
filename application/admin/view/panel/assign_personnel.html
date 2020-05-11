@@ -1,0 +1,113 @@
+{include file="common/head"/}
+<style type="text/css">
+ .top{width: 100%;height: 60px;background: white;z-index: 9999;position: fixed;top: 0;}
+</style>
+<div class="layui-form-item top">
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="layui-btn layui-btn-radius layui-btn-disabled"><b style="color:#000000">标签指定老师列表</b></span>
+<button class="layui-btn" onclick="del()" style="float:right;margin-right:10px"><i class="layui-icon">&#xe640;</i>删除</button><br><br>
+<div class="layui-form-item">
+<div class="layui-form layui-form-pane" style="float:left;">
+<div class="layui-form-item">
+<label class="layui-form-label" style="margin-left:30px;">快捷查询</label>
+<div class="layui-input-inline">
+ <input type="text" class="layui-input" value="{$data.seek}" id="seek" style="width:320px;" placeholder="请输入个人编号/姓名">
+</div>
+<button class="layui-btn" style="margin-left:150px;" onclick="searchs()"><i class="layui-icon">&#xe615;</i>搜索</button>
+</div>  
+</div>
+</div>
+</div><br><br><br><br><br><hr>
+  <table class="layui-table">
+    <thead>
+     <tr>
+       <td>
+        <input type="checkbox" name="claimCase[]" id="all" onclick="selectAll(this)">
+       </td>
+       <td>个人编号</td>
+       <td>姓名</td>
+       <td>性别</td>        
+     </tr>
+    </thead>
+    <tbody>
+    {volist name="data.data.lists" id="vo"}
+     <tr>
+      <td>
+       <input type="checkbox" class="checkAll" name="checkAll[]" value="{$vo.Account}" onclick="selectAll(this)">
+      </td>
+      <td>{$vo.Account}</td>
+      <td>{$vo.Name}</td>
+      <td>{$vo.Sex==1?'<span>男</span>':'<span>女</span>'}</td>
+     </tr>
+    {/volist}
+   </tbody>
+  </table>    
+<div id="pages" style="text-align:center"></div>   
+{include file="common/foot"/}     
+<script type="text/javascript"> 
+     //引用layui主键
+      layui.use(['layer','laypage'],function(){
+        layer =layui.layer;
+        //引用jquery
+         $ =layui.jquery;
+         laypage =layui.laypage;
+         laypage.render({
+            elem: 'pages' //注意，这里的 test1 是 ID，不用加 # 号
+            ,count:{$data.data.total}
+            ,limit:{$data.pageSize}
+            ,curr:{$data.page}
+            ,jump: function(obj, first){                
+              //首次不执行
+                if(!first){
+                  //实现搜索跳转和分页的统一
+                  searchs(obj.curr);
+                }
+              }
+          });
+      });
+      //搜索
+     function searchs(curpage){
+      //消除第一行空格
+      var seek =$.trim($('#seek').val());
+      let labelid = '{$labelid}';
+      //有wd就加载至分页后面
+      //var url ="/admin.php/admin/Panel/assign_personnel?labelid="+labelid+"&page="+curpage;
+      var url ='{:url("Panel/assign_personnel")}?labelid='+labelid+"&page="+curpage;
+      //var_dump(url);
+      if(seek){
+        //将搜索到的内容拼接至分页后面
+        url+='&seek='+seek;
+      }
+      //页面跳转，搜索和分页跳转的统一
+      window.location.href =url;
+  }
+    //删除
+    function del(){
+    var arr = [];
+    var id ='{$labelid}';
+
+    let x = 0;
+    $("input.checkAll").each(function(index){
+    if($(this).prop("checked")) {
+      console.log(index+$(this).val());
+      $val = $(this).val();
+      arr[x++] = $val;
+      }
+    });
+    //询问框
+    layer.confirm('确认要删除吗?', {
+      icon :8,
+      btn: ['确定','取消'] //按钮
+    }, function(){
+      //提交数据，跳转页面
+      $.post("{:url('Panel/remove')}",{'checkAll':arr,'id':id},function(res){
+        if(res.code>0){
+            layer.alert(res.msg,{icon:2});
+        }else{
+            layer.msg(res.msg);
+            setTimeout(function(){parent.window.location.reload();},500);
+        }
+      },'json');
+    });
+  }
+</script>     

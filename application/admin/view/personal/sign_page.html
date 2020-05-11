@@ -1,0 +1,319 @@
+{include file="common/head"/}
+  <form class="layui-form">
+    <div class="layui-layout layui-layout-admin">  
+     <div><br>   
+       <table>
+         <thead>
+           <tr>          
+             <td>
+              <div class="layui-form-item">
+               <label class="layui-form-label">会议的编号</label>
+              <div class="layui-input-inline">
+               <input type="text" name="id" class="layui-input" value="{$result.id}" disabled> 
+              </div> 
+              </div>
+             </td> 
+             <td>
+              <div class="layui-form-item">
+               <label class="layui-form-label">会议的标题</label>
+              <div class="layui-input-inline">
+               <input type="text" name="title" class="layui-input" value="{$result.title}" disabled> 
+              </div> 
+              </div>
+             </td>        
+           </tr>
+         </thead>
+
+          <thead>
+           <tr>          
+             <td>
+              <div class="layui-form-item">
+               <label class="layui-form-label">邀请人数</label>
+              <div class="layui-input-inline">               
+               <input type="text" name="meeting_count" class="layui-input" value="{$result.meeting_count}" disabled>                            
+              </div> 
+              </div>
+              </div> 
+              </div>
+             </td> 
+             <td>
+              <div class="layui-form-item">
+               <label class="layui-form-label">会议开始时间</label>
+              <div class="layui-input-inline">
+               <input type="text" name="start" id="input-start" class="layui-input"  value="{:date('Y-m-d H:i',$result.start)}" disabled>
+              </div> 
+              </div>
+             </td>        
+           </tr>
+          </thead>
+
+          <thead>
+           <tr>                     
+             <td>
+              <div class="layui-form-item">
+               <label class="layui-form-label">会议时长(分钟)</label>
+              <div class="layui-input-inline">
+               <input type="text" name="duration" class="layui-input" value="{$result.duration}" disabled>
+              </div> 
+              </div>
+             </td>
+             <td>
+              <div class="layui-form-item">
+               <label class="layui-form-label">会议主办单位(学院)</label>
+              <div class="layui-input-inline">
+              <select name="unit" disabled>
+               {volist name="res" id="vo"}
+                  <option value="{$vo.Name}">{$vo.Name}</option>
+               {/volist} 
+              </select>
+              </div> 
+              </div>
+             </td>         
+           </tr>
+          </thead>
+       
+          <thead>
+            <tr>                       
+             <td>
+              <div class="layui-form-item">
+               <label class="layui-form-label">负责人电话</label>
+              <div class="layui-input-inline">
+               <input type="text" maxlength="11" name="telephone" class="layui-input"  value="{$result.telephone}" disabled> 
+              </div> 
+              </div>
+             </td>
+             <td>
+              <div class="layui-form-item">
+               <label class="layui-form-label">会议负责人</label>
+              <div class="layui-input-inline">
+                 <input type="text" name="attn" class="layui-input" value="{$result.attn}"  readonly>
+              </div> 
+              </div>
+             </td>          
+            </tr>
+          </thead>
+  
+          <thead>
+           <tr>                        
+            <td>
+              <div class="layui-form-item">
+               <label class="layui-form-label">会议状态</label>
+              <div class="layui-input-inline"> 
+              {if condition="$result.condition eq 0 "}              
+               <input type="text"  name="condition" class="layui-input" style="color:#4169E1" value="未开始" disabled>
+              {elseif condition="$result.condition eq 1 "}  
+              <input type="text"  name="condition" class="layui-input" style="color:#006400" value="进行中" disabled>
+              {elseif condition="$result.condition eq 2 "}  
+              <input type="text"  name="condition" class="layui-input" style="color:red" value="已结束" disabled>
+              {/if}
+              </div> 
+              </div>
+            </td> 
+            <td>
+              <div class="layui-form-item">
+               <label class="layui-form-label">签到时间</label>
+              <div class="layui-input-inline">
+               <input type="text" name="sign_time" class="layui-input" value="{:date('Y-m-d H:i',$result.sign_time)}" disabled> 
+              </div> 
+              </div>
+            </td>         
+           </tr>
+          </thead>
+          
+          <thead>          
+           <tr> 
+             {if condition="$result.condition eq 2"}                      
+              <td>             
+                <div class="layui-form-item">
+                 <label class="layui-form-label">状态</label>
+                <div class="layui-input-inline">
+                 {if condition="$result.sign_status eq 0"}
+                 <input type="text" name="sign_status" class="layui-input"  value="缺席" disabled> 
+                 {elseif condition="$result.sign_status eq 1"}
+                 <input type="text" name="sign_status" class="layui-input"  value="已签到" disabled>
+                 {elseif condition="$result.sign_status eq 2"}
+                 <input type="text" name="sign_status" class="layui-input"  value="请假" disabled>
+                 {/if}
+                </div> 
+                </div>             
+              </td>
+              {/if}
+
+              {if condition="$result.sign_status eq 2"}                  
+                <td>     
+                 <div class="layui-form-item">
+                   <label class="layui-form-label">审核</label>
+                  <div class="layui-input-inline">
+                    <select name="audit" id="audits">
+                       <option value="1">{$result.audit}</option>
+                     </select>
+                  </div> 
+                 </div>                              
+                </td>
+              {elseif condition="$result.condition eq 2"}
+              {elseif condition="$result.condition eq 1"}
+              {else /}  
+                <td>     
+                 <div class="layui-form-item">
+                   <label class="layui-form-label">审核</label>
+                  <div class="layui-input-inline">
+                    <select name="audit" id="audits" >
+                      {volist name="parson" id="vo"}
+                       <option value="{$vo.name}">{$vo.name}</option>
+                      {/volist} 
+                     </select>
+                  </div> 
+                 </div>                              
+                </td>
+              {/if}          
+           </tr>           
+          </thead> 
+
+          <thead>
+           <tr>                       
+            <td>
+            {if condition="$result.condition eq 2"}
+              <div class="layui-form-item">
+                <label class="layui-form-label">审核状态</label>
+              <div class="layui-input-inline"> 
+               {if condition="$result.audit_status eq 0"}                            
+                <input type="text" name="audit_status" class="layui-input" style="color:red" value="审核中" disabled>
+               {elseif condition="$result.audit_status eq 1"}                            
+                <input type="text" name="audit_status" class="layui-input"  style="color:green" value="同意" disabled>
+               {elseif condition="$result.audit_status eq 2"}                            
+                <input type="text" name="audit_status" class="layui-input"  style="color:#A9A9A9" value="不同意" disabled>
+               {/if}                             
+               </div> 
+              </div> 
+            {elseif condition="$result.sign_status eq 2"}            
+              <div class="layui-form-item">
+                <label class="layui-form-label">审核状态</label>
+              <div class="layui-input-inline"> 
+               {if condition="$result.audit_status eq 0"}                            
+                <input type="text" name="audit_status" class="layui-input" style="color:red" value="审核中" disabled>
+               {elseif condition="$result.audit_status eq 1"}                            
+                <input type="text" name="audit_status" class="layui-input"  style="color:green" value="同意" disabled>
+               {elseif condition="$result.audit_status eq 2"}                            
+                <input type="text" name="audit_status" class="layui-input"  style="color:#A9A9A9" value="不同意" disabled>
+               {/if}                             
+               </div> 
+              </div>
+            {/if}            
+            </td>
+
+            {if condition="$result.audit_status eq 1"}
+              <td>   
+               <div class="layui-form-item">
+                 <label class="layui-form-label">审批</label>
+                <div class="layui-input-inline">
+                  <select>                    
+                    {volist name="onlody" id="cvo"} 
+                      <option value="1" selected>{$cvo.Name}</option>
+                    {/volist}
+                  </select>
+                </div> 
+               </div>                              
+              </td>
+            {/if}         
+           </tr>
+          </thead>
+
+          <thead>          
+            {if condition="$result.sign_status eq 2"}
+             <tr>                                            
+              <td>            
+                <div class="layui-form-item">
+                  <label class="layui-form-label">请假原因</label>
+                <div class="layui-input-inline">                             
+                  <textarea placeholder="填写请假原因" id="reason" disabled>{$result.leave_cause}</textarea>           
+                </div> 
+                </div>             
+              </td>                   
+             </tr>
+            {elseif condition="$result.condition eq 0"} 
+              <tr>                                            
+              <td>            
+                <div class="layui-form-item">
+                  <label class="layui-form-label">请假原因</label>
+                <div class="layui-input-inline">                             
+                  <textarea placeholder="填写请假原因" id="reason">{$result.leave_cause}</textarea>           
+                </div> 
+                </div>             
+              </td>                   
+             </tr>
+            {/if} 
+          </thead>     
+       </table> 
+        <div class="layui-form-item" style="text-align:center">
+          {if condition="$result.condition eq 2"}
+           <button type="button" class="layui-btn" style="background-color:grey;cursor:not-allowed;">签到结束</button>
+          {/if}
+
+            {if condition="$result.condition eq 1"}
+              {if condition="empty($result.sign_status)"}
+              <button type="button" class="layui-btn" onclick="sign('{$result.number}','{$result.Account}',this)">签到</button>
+              {elseif condition="$result.sign_status eq 1"}
+              <button type="button" class='layui-btn' style="background-color:grey;cursor:not-allowed;">已签到</button>      
+              {/if}
+            {/if}  
+
+            {if condition="$result.condition eq 0"}
+              {if condition="$result.sign_status eq 2"}
+                <button type="button" class='layui-btn' style="background-color:#FF4500;cursor:not-allowed;">已请假</button>
+              {elseif condition="$result.audit_status eq 2"}
+                <button type="button" class='layui-btn' style="background-color:grey;cursor:not-allowed;">请假</button> 
+              {else /}
+                <button type="button" class='layui-btn' onclick="leave('{$result.number}','{$result.Account}',this)">请假</button>            
+              {/if}
+            {/if} 
+
+            {if condition="$result.audit_status eq 1"} 
+              <button type="button" class='layui-btn' style="background-color:#FF4500;cursor:not-allowed;">已请假</button>
+            {/if}
+        </div>              
+     </div>
+    </div>
+  </form>  
+{include file="common/foot"/}
+<script type="text/javascript"> 
+    //个人签到
+  function sign(meeting_id, teacher_account,obj){
+    var id =parseInt($('input[name="id"]').val());
+
+    //询问框
+      layer.confirm('确定要签到吗?',{
+        icon :8,
+        btn: ['确定','取消'] //按钮
+      },function(){
+    $.post("{:url('Personal/save_sign')}",{'meeting_id':meeting_id,'teacher_account':teacher_account},function(res){
+         if(res.code >0){
+            layer.msg(res.msg,{icon:2});
+         }else{
+            layer.msg(res.msg);
+            setTimeout(function(){parent.window.location.reload();},500); 
+         }            
+      },'json');
+    });
+  }  
+   //个人请假
+  function leave(meeting_id, teacher_account, obj){
+    var audit = $("#audits").val();
+    console.log('Value:' + audit);
+    //var audit_status =$.trim($('input[name="audit_status"]').val());
+    //询问框
+      layer.confirm('确定要请假吗?',{
+        icon :8,
+        btn: ['确定','取消'] //按钮
+      },function(){
+    $.post("{:url('Personal/save_leave')}",{audit:$("#audits").val(),'meeting_id':meeting_id,'teacher_account':teacher_account, leave_cause:$("#reason").val().trim()},function(res){
+        //判断
+        if(res.code>0){
+          layer.alert(res.msg,{icon:2});
+        }else{
+          layer.msg(res.msg);
+           setTimeout(function(){parent.window.location.reload()},1000);  
+        }               
+      },'json');
+    });
+  }
+</script>

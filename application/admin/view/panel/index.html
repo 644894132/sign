@@ -1,0 +1,150 @@
+{include file="common/head"/}
+<div class="layui-form-item top">
+ <div class="header">
+   <span>标签管理</span>
+   <button class="layui-btn" type="button" style="float:right;" onclick="add()"><i class="layui-icon">&#xe608;</i>添加标签</button>
+   <div></div>
+ </div> 
+ <br> 
+<div class="layui-form-item">
+<div class="layui-form layui-form-pane" style="float:left;">
+<div class="layui-form-item">
+<label class="layui-form-label" style="margin-left:30px;">快捷查询</label>
+<div class="layui-input-inline">
+ <input type="text" class="layui-input" value="{$data.seek}" id="seek" style="width:320px;" placeholder="请输入编号/标签名称">
+</div>
+<button class="layui-btn" style="margin-left:150px;" onclick="searchs()"><i class="layui-icon">&#xe615;</i>搜索</button>
+</div>  
+</div>
+</div> 
+</div>
+</div><br><br><br><br><br><hr>     
+ <table class="layui-table">
+  <thead>
+     <tr>
+       <td>编号</td>
+       <td>标签名称</td>
+       <td>老师人数</td>
+       <td>操作</td>
+     </tr>
+  </thead>
+  <thead>
+     {volist name="data.data.lists" key="key" id="vo"}
+     <tr>
+       <td>{$key}</td>
+       <td>{$vo.labels}</td>
+       <td>{$vo.count}</td>
+       <td>
+         <button class="layui-btn" onclick="add({$vo.id})" title="编辑"><i class="layui-icon">&#xe642;</i></button>
+         <button class="layui-btn layui-btn-danger" title="删除" onclick="remove('{$vo.id}')"><i class="layui-icon">&#xe640;</i></button>
+         <button class="layui-btn layui-btn-normal" title="人员指定" onclick="person_assign('{$vo.id}')"><i  class="layui-icon">&#xe61f;</i></button>
+       </td>
+     </tr>
+     {/volist}
+  </thead>
+ </table> 
+{include file="common/foot"/}
+<script type="text/javascript">
+  //引用layui主键
+      layui.use(['layer','laypage'],function(){
+        layer =layui.layer;
+        //引用jquery
+         $ =layui.jquery;
+         laypage =layui.laypage;
+
+         laypage.render({
+            elem: 'pages' //注意，这里的 test1 是 ID，不用加 # 号
+            ,count:{$data.data.total}
+            ,limit:{$data.pageSize}
+            ,curr:{$data.page}
+            ,jump: function(obj, first){                
+              //首次不执行
+                if(!first){
+                  //实现搜索跳转和分页的统一
+                  searchs(obj.curr);
+                }
+              }
+          });
+      });
+       //搜索
+       function searchs(curpage){
+        //消除第一行空格
+        var seek =$.trim($('#seek').val());
+        //有wd就加载至分页后面
+        //var url ="/admin.php/admin/Panel/index?page="+curpage;
+        var url ="{:url('Panel/index')}?page="+curpage;
+        //var_dump(url);
+        if(seek){
+          //将搜索到的内容拼接至分页后面
+          url+='&seek='+seek;
+        }
+        //页面跳转，搜索和分页跳转的统一
+        window.location.href =url;
+    }
+    //添加
+      function add(id){
+        //iframe层
+        layer.open({
+          //弹框样式
+          type: 2,
+          title:id>0?'编辑标签':'添加标签', //
+          //shadeClose: true,
+          //弹框阴影色度
+          shade: 0.5,
+          //弹框宽高
+          area: ['450px', '400px'],
+          //URL地址
+          content: '{:url("Panel/label_add")}?id='+id //iframe的url  
+       });
+     }
+       /* //删除
+      function remove(id){
+        var arr = [];
+          $("input.checkAll").each(function(index){
+            if ($(this).attr("checked")) {
+              $val = $(this).parent().next().text();
+              arr[index] = $val;
+            }
+          });
+        //询问框
+        layer.confirm('确认要删除吗?', {
+          icon :8,
+          btn: ['确定','取消'] //按钮
+        }, function(){
+          //提交数据，跳转页面
+          $.post('/admin.php/admin/Label/delete',{'checkAll':arr},function(res){
+            if(res.code>0){
+                layer.alert(res.msg,{icon:2});
+            }else{
+                layer.msg(res.msg);
+                setTimeout(function(){window.location.reload();},1000);
+            }
+          },'json');
+        });
+      }*/
+      //删除
+      function remove(id){
+        //询问框
+        layer.confirm('确认要删除吗?', {
+          icon :8,
+          btn: ['确定','取消'] //按钮
+        }, function(){
+          //提交数据，跳转页面
+          $.post("{:url('Panel/delete_label')}",{'id':id},function(res){
+            if(res.code>0){
+                layer.alert(res.msg,{icon:6});
+            }else{
+                layer.msg(res.msg);
+                setTimeout(function(){window.location.reload();},1000);
+            }
+          },'json');
+        });
+      }
+      //人员指定
+      function person_assign(id){
+        // setTimeout(function(){window.location.href="/admin.php/admin/Label/main_interface?id="+id},500);
+        let url = "{:url('Panel/main_interface')}?id="+id;
+        // console.log(url);
+        window.location.href = url;
+      }
+</script>

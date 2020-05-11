@@ -1,0 +1,50 @@
+{include file="common/head"/} 
+ <div class="header">
+  <span>与会人数统计</span>
+  <!-- <a class="layui-btn" style="float:right;margin-top:8px;" href="{:url('Gather/download')}"><i class="layui-icon">&#xe601;</i>生成Excel文件</a>  -->
+   <div></div><br>
+ </div> 
+ <table class="layui-table">
+   <thead>
+     <tr>
+       <td>会议编号</td>
+       <td>会议标题</td>
+       <td>会议邀请人数</td>
+       <td>签到人数</td>       
+       <td>请假人数</td>
+       <td>缺席人数</td>
+     </tr>
+     {volist name="data.lists" key="key" id="vo"}
+     <tr>
+       <td>{$key}</td>
+       <td><a href="javascript:;" onclick="meeting_add({$vo.id}, 3)">{$vo.title}</a></td>
+       <td><a href="{:url('Meeting/invite_teacher_info')}?op=1&MeetingID={$vo.id}">{$vo.meeting_count}</a></td>
+       <td><a href="{:url('Gather/sign_info')}?meeting_id={$vo.id}">{$vo.sign_nums}</a></td>
+       <td><a href="{:url('Gather/leave_info')}?meeting_id={$vo.id}">{$vo.leave_nums}</a></td>        
+       <td><a href="{:url('Gather/absent_info')}?meeting_id={$vo.id}">{$vo.absent_nums}</a></td>               
+     </tr>
+     {/volist}
+   </tbody>
+ </table>
+<div id="pages" style="text-align:center"></div>  
+{include file="common/foot"/}
+<script type="text/javascript">
+  //删除
+function remove(id){
+  //询问框
+  layer.confirm('确认要删除吗?', {
+    icon :8,
+    btn: ['确定','取消'] //按钮
+  }, function(){
+    //提交数据，跳转页面
+    $.post("{:url('Gather/delete')}",{'id':id},function(res){
+      if(res.code>0){
+          layer.alert(res.msg,{icon:6});
+      }else{
+          layer.msg(res.msg);
+          setTimeout(function(){window.location.reload();},1000);
+      }
+    },'json');
+  });
+}
+</script>  

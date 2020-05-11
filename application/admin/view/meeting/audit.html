@@ -1,0 +1,106 @@
+{include file="common/head"/}
+<style type="text/css">
+  .active { background-background-color:green; }
+</style>
+<div class="header">
+ <span>审核列表</span>
+ <div></div>
+</div> 
+<br>
+  <form class="layui-form">
+    <table class="layui-table">
+      <thead>
+        <tr>
+          <td>会议编号</td>
+          <td>账号</td>
+          <td>姓名</td>
+          <td>请假原因</td>
+          <td>操作</td>
+        </tr>
+      </thead>
+      <thead>
+        {volist name="data.lists" id="vo"}
+          {if condition="$permission eq 1"}
+            <tr> 
+              <td>{$vo.number}</td>     
+              <td>{$vo.Account}</td>
+              <td>{$vo.Name}</td>
+              <td>
+                <textarea disabled>{$vo.leave_cause}</textarea>
+              </td>
+              <td>
+              {if condition="$vo.audit_status eq 0"}
+                <button type="button" class="layui-btn" onclick="consent('{$vo.id}')">同意</button>
+                <button type="button" class="layui-btn layui-btn-normal" onclick="disagree('{$vo.id}')">不同意</button>
+              {elseif condition="$vo.audit_status eq 1"}
+                <button type="button" class="layui-btn" style="background-color:#90EE90;cursor:not-allowed;">同意</button>
+              {elseif condition="$vo.audit_status eq 2"}
+                <button type="button" class="layui-btn" style="background-color:grey;cursor:not-allowed;">不同意</button>               
+              {/if}  
+              </td>
+            {/if}  
+            </tr>  
+
+          {if condition="$permission eq 2"}
+            <tr>
+              <td>{$vo.number}</td>     
+              <td>{$vo.Account}</td>
+              <td>{$vo.Name}</td>
+              <td>
+                <textarea disabled>{$vo.leave_cause}</textarea>
+              </td>
+              <td>
+              {if condition="$vo.audit_status eq 0"}
+                <button type="button" class="layui-btn" onclick="consent('{$vo.id}')">同意</button>
+                <button type="button" class="layui-btn layui-btn-normal" onclick="disagree('{$vo.id}')">不同意</button>
+              {elseif condition="$vo.audit_status eq 1"}
+                <button type="button" class="layui-btn" style="background-color:#90EE90;cursor:not-allowed;">同意</button>
+              {elseif condition="$vo.audit_status eq 2"}
+                <button type="button" class="layui-btn" style="background-color:grey;cursor:not-allowed;">不同意</button>               
+              {/if}  
+              </td>  
+            </tr>  
+          {/if}
+        {/volist}  
+      </thead>
+    </table><br><hr>
+  </form>
+{include file="common/foot"/}
+<script type="text/javascript">
+   //同意
+  function consent(id){
+    //询问框
+    layer.confirm('确认要同意吗?', {
+      icon :8,
+      btn: ['确定','取消'] //按钮
+    }, function(){
+      //提交数据，跳转页面
+      $.post("{:url('Meeting/consent')}",{'id':id},function(res){
+        if(res.code >0){
+            layer.alert(res.msg,{icon:2});
+          }else{
+            layer.msg(res.msg);
+            setTimeout(function(){window.location.reload();},1000);
+          }
+      },'json');
+    });
+}  
+   //不同意
+  function disagree(id){
+    //询问框
+    layer.confirm('确认不同意吗?', {
+      icon :8,
+      btn: ['确定','取消'] //按钮
+    }, function(){
+      //提交数据，跳转页面
+      $.post("{:url('Meeting/disagree')}",{'id':id},function(res){
+        if(res.code>0){
+            layer.alert(res.msg,{icon:6});
+        }else{
+            layer.msg(res.msg);
+            setTimeout(function(){window.location.reload();},1000);
+        }
+      },'json');
+    });
+}  
+</script>

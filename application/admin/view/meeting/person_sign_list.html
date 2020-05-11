@@ -1,0 +1,131 @@
+{include file="common/head"/}
+<div class="header">
+ <span>老师列表</span>
+ <div></div>
+</div><br>
+<div class="layui-form-item">  
+  <div class="sign" style="width:100%;height:1000px;float:right;">
+    <table class="layui-table">
+      <thead>
+       <tr>
+         <td>会议编号</td>
+         <td>个人编号</td>
+         <td>姓名</td>
+         <td>性别</td>
+         <td>签到/请假时间</td>
+         {if condition="$permission eq 1"}
+         <td>操作</td>
+         {elseif condition="$permission eq 3"/}
+         <td>操作</td>
+         {elseif condition="$permission eq 2"/}
+         <td>操作</td>
+         {/if}
+       </tr>
+      </thead>
+      <thead>
+       {volist name="data.lists" id="vo"}
+         {if condition="$permission eq 1"}
+       <tr>
+         <td>{$vo.number}</td>
+         <td>{$vo.Account}</td>
+         <td>{$vo.Name}</td>
+         <td>{$vo.Sex==1?'<span>男</span>':'<span>女</span>'}</td>
+         {if condition="!empty($vo.sign_time)"}
+         <td>{:date('Y-m-d H:i',$vo.sign_time)}</td>
+         {else /}
+         <td></td>
+         {/if}
+         <td>
+          {if condition="empty($vo.sign_status)"}
+          <button type="button" class="layui-btn" onclick="sign('{$vo.number}','{$vo.Account}',this)">签到</button>
+          {elseif condition="$vo.sign_status eq 1"}
+          <button type="button" class='layui-btn' style="background-color:grey;cursor:not-allowed;">已签到</button>      
+          {/if}
+
+          {if condition="empty($vo.sign_status)"}
+          <button type="button" class='layui-btn' onclick="leave('{$vo.number}','{$vo.Account}',this)">请假</button>
+          {elseif condition="$vo.sign_status eq 2"}
+          <button type="button" class='layui-btn' style="background-color:#FF4500;cursor:not-allowed;">已请假</button>
+          {/if}
+         </td>
+       </tr>
+       {elseif condition="$vo.Account eq $account"}
+       <tr>
+        <td>{$vo.number}</td>
+         <td>{$vo.Account}</td>
+         <td>{$vo.Name}</td>
+         <td>{$vo.Sex==1?'<span>男</span>':'<span>女</span>'}</td>
+         {if condition="!empty($vo.sign_time)"}
+         <td>{:date('Y-m-d H:i',$vo.sign_time)}</td>
+         {else /}
+         <td></td>
+         {/if}
+         <td>
+         {if condition="empty($vo.sign_status)"}
+          <button type="button" class="layui-btn" onclick="sign('{$vo.number}','{$vo.Account}',this)">签到</button>
+          {elseif condition="$vo.sign_status eq 1"}
+          <button type="button" class='layui-btn' style="background-color:grey;cursor:not-allowed;">已签到</button>      
+          {/if}
+
+          {if condition="empty($vo.sign_status)"}
+          <button type="button" class='layui-btn' onclick="leave('{$vo.number}','{$vo.Account}',this)">请假</button>
+          {elseif condition="$vo.sign_status eq 2"}
+          <button type="button" class='layui-btn' style="background-color:#FF4500;cursor:not-allowed;">已请假</button>
+          {/if}
+         </td>
+       </tr>
+        {/if}
+       {/volist} 
+      </thead>
+    </table>
+  </div> 
+</div>        
+{include file="common/foot"/}
+ <script type="text/javascript">
+    //删除
+    function remove(id){
+      //询问框
+      layer.confirm('确认要删除吗?',{
+        icon :8,
+        btn: ['确定','取消'] //按钮
+      }, function(){
+        //提交数据，跳转页面
+        $.post('{:url("Meeting/delete")}',{'id':id},function(res){
+          if(res.code>0){
+            layer.alert(res.msg,{icon:6});
+          }else{
+            layer.msg(res.msg);
+            setTimeout(function(){window.location.reload();},1000);
+          }
+        },'json');
+      });
+    } 
+  //个人签到
+  function sign(meeting_id, teacher_account, obj){
+    //询问框
+      layer.confirm('确定要签到吗?',{
+        icon :8,
+        btn: ['确定','取消'] //按钮
+      },function(){
+    $.post("{:url('Meeting/save_sign')}",{'meeting_id':meeting_id,'teacher_account':teacher_account},function(res){
+          //是否签到
+          // $(obj).prop("disabled", true).text("已签到").css("backgroundColor", "grey").css("cursor", "not-allowed").parent().prev().text(res);
+          window.location.reload();    
+      },'json');
+    });
+  }
+  //个人请假
+  function leave(meeting_id, teacher_account, obj){
+    //询问框
+      layer.confirm('确定要请假吗?',{
+        icon :8,
+        btn: ['确定','取消'] //按钮
+      },function(){
+    $.post("{:url('Meeting/save_leave')}",{'meeting_id':meeting_id,'teacher_account':teacher_account},function(res){
+          /*//是否请假
+          $(obj).prop({"disabled":true, "class":"layui-btn layui-btn-danger"}).text("请假").prev().css({"backgroundColor":"grey", "cursor":"not-allowed"}).removeProp("button");*/
+         window.location.reload();          
+      },'json');
+    });
+  }
+</script>

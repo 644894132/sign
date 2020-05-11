@@ -1,0 +1,211 @@
+{include file="common/head"/}
+<style type="text/css">
+  .active { background-color:green; }
+</style>
+<div class="header">
+  <span>参会人次统计</span>
+   <div></div>
+</div><br>
+  <div style="margin-left:20px;">
+   <div class="layui-btn" id="month" onclick="month(this)">月度</div>
+   <div class="layui-btn" id="year" onclick="year(this)">年度</div>
+   <br><br><br>
+  </div> 
+ <div class="layui-col-md6">
+    <div class="layui-card">
+      <div class="layui-card-header"></div>
+      <div class="layui-card-body">
+        <div id="chart" style="width: 1600px;height:700px;"></div>
+      </div>
+    </div>
+  </div>
+{include file="common/foot"/}
+<script type="text/javascript">
+   $("#year").trigger("click");
+      //月度参会人次
+    function month(obj){
+      $(obj).addClass("active");
+      $("#year").removeClass("active");
+      var myChart = echarts.init(document.getElementById('chart'));   
+     // 指定图表的配置项和数据
+      myChart.setOption({
+         title: {
+             text: '月度参会人次'
+         },
+         tooltip : {
+              trigger: 'axis'
+          },
+         legend: {
+             data:['参会人次']
+         },
+         toolbox: {
+              show : true,
+              feature : {
+                  dataView : {show: true, readOnly: false},
+                  magicType : {show: true, type: ['line', 'bar']},
+                  restore : {show: true},
+                  saveAsImage : {show: true}
+              }
+          },
+          calculable : true,
+         xAxis: {
+          type : 'category',
+             data: []
+         },
+         yAxis:  [
+              {
+                  type : 'value'
+              }
+          ],
+         series: [
+         ,{
+             name: '参会人次',
+             type: 'bar',
+             data: [],
+             markPoint : {
+                      data : [
+                          {type : 'max', name: '最大值'},
+                          {type : 'min', name: '最小值'}
+                      ]
+                  },
+         }
+       ]
+     });
+       myChart.showLoading();    
+      
+        var xresult =[];
+        var yresult =[];       
+     $.ajax({
+        type: 'post',
+        async :true,
+        url :"{:url('Gather/month_conferee')}",
+        data :[],
+        dataType :'json',
+        success :function(data){
+            //json数据转为数组
+          var jsonarray = eval('('+data+')');
+            console.log(jsonarray);
+          if(jsonarray){
+            for(var i=0;i<jsonarray.length;i++){
+                xresult.push(jsonarray[i].month);
+            }
+            for(var i=0;i<jsonarray.length;i++){
+                yresult.push(jsonarray[i].sum);
+            }
+            myChart.hideLoading();
+            myChart.setOption({
+                xAxis :{
+                    name :'年/月',
+                    data:xresult
+                },
+                yAxis :{
+                    name :'人次',
+                    data:yresult
+                },
+               series:[{
+                    data : yresult
+                },
+              ]  
+            });
+          }
+        },
+        error :function(errorMsg){
+            alert('请求图标失败');
+            myChart.hideLoading();
+        }
+     });
+ }
+
+   //年度参会人次
+   function year(obj){
+    $(obj).addClass("active");
+    $("#month").removeClass("active");
+     var myChart = echarts.init(document.getElementById('chart'));   
+     // 指定图表的配置项和数据
+      myChart.setOption({
+         title: {
+             text: '年度参会人次'
+         },
+         tooltip : {
+              trigger: 'axis'
+          },
+         legend: {
+             data:['参会人次']
+         },
+         toolbox: {
+              show : true,
+              feature : {
+                  dataView : {show: true, readOnly: false},
+                  magicType : {show: true, type: ['line', 'bar']},
+                  restore : {show: true},
+                  saveAsImage : {show: true}
+              }
+          },
+          calculable : true,
+         xAxis: {
+          type : 'category',
+             data: []
+         },
+         yAxis:  [
+              {
+                  type : 'value'
+              }
+          ],
+         series: [
+         {
+             name: '参会人次',
+             type: 'bar',
+             data: [],
+             markPoint : {
+                      data : [
+                          {type : 'max', name: '最大值'},
+                          {type : 'min', name: '最小值'}
+                      ]
+                  },
+         }
+       ]
+     });
+       myChart.showLoading();
+        var xData =[];
+        var yData =[];       
+     $.ajax({
+        type: 'post',
+        async :true,
+        url :"{:url('Gather/year_conferee')}",
+        data :[],
+        dataType :'json',
+        success :function(data){
+            //json数据转为数组
+          var jsonarray = eval('('+data+')');
+            console.log(jsonarray);
+          if(jsonarray){
+            for(var i=0;i<jsonarray.length;i++){
+                xData.push(jsonarray[i].date);
+            }
+            for(var i=0;i<jsonarray.length;i++){
+                yData.push(jsonarray[i].ject);
+            }
+            myChart.hideLoading();
+            myChart.setOption({
+                xAxis :{
+                    name :'年份',
+                    data:xData
+                },
+                yAxis :{
+                    name :'人次',
+                    data:yData
+                },
+                series:[{
+                    data : yData
+                },
+            ]
+            });
+          }
+        },
+        error :function(errorMsg){
+            alert('请求图标失败');
+            myChart.hideLoading();
+        }
+     });
+ }
+</script>

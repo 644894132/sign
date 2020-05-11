@@ -1,0 +1,59 @@
+{include file="common/head"/}
+<div class="header">
+<span>角色管理</span>
+<button class="layui-btn" style="float:right;" onclick="add_role()">添加</button>
+<div></div>
+</div>
+<table class="layui-table">
+ <thead>
+    <tr>
+      <th>ID</th>
+      <td>角色名称</td>
+      <td>操作</td>
+    </tr>
+ </thead>
+ <tbody>
+ {volist name="data.lists" key="key" id="vo"}
+    <tr>
+      <td>{$key}</td>
+      <td>{$vo.title}</td>
+      <td>
+        <button class="layui-btn layui-btn-normal" onclick="add_role({$vo.id})">编辑</button>
+        <button class="layui-btn layui-btn-danger" onclick="del({$vo.id})">删除</button>
+      </td>
+    </tr>
+ {/volist}
+ </tbody>
+</table>
+{include file="common/foot"/}     
+<script type="text/javascript">
+     //添加/编辑角色
+    function add_role(id){
+      layer.open({
+       type: 2,
+        title: id>0 ?'编辑角色' :'添加角色',
+        //shadeClose: true,
+        shade: 0.3,
+        area: ['800px', '700px'],
+        content: '{:url("Panel/add_role")}?id='+id //iframe的url
+      });
+    }
+    //删除角色
+    function del(id){
+      //询问框
+        layer.confirm('确认要删除吗?', {
+          icon:3,
+          btn: ['确定','取消'] //按钮
+        }, function(){
+          //提交数据，跳转页面
+          $.post("{:url('Panel/delete')}",{'id':id},function(res){
+            if(res.code>0){
+                layer.alert(res.msg,{icon:2});
+            }else{
+                layer.msg(res.msg);
+                setTimeout(function(){window.location.reload();},1000);
+            }
+          },'json');
+        });
+    }
+</script>

@@ -1,0 +1,67 @@
+{include file="common/head"/}
+<div class="header">
+   <span>网站设置</span>
+   <div></div>
+</div>	
+<form class="layui-form" style="margin-top:10px;"> 
+  <div class="layui-form-item">
+    <label class="layui-form-label">网站名称</label>
+    <div class="layui-input-inline">
+      <input type="text" class="layui-input" name="names" value="{$data.item.names}">
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">系统简称</label>
+    <div class="layui-input-inline">
+      <input type="text" class="layui-input" name="abbreviation" value="{$data.item.abbreviation}">
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">版权所有权</label>
+    <div class="layui-input-inline">
+      <input type="text" class="layui-input" name="copy" value="{$data.item.copy}">
+    </div>
+  </div>   
+  <div class="layui-form-item">
+    <label class="layui-form-label">系统描述</label>
+    <div class="layui-input-inline">
+      <input type="text" class="layui-input" name="describe" value="{$data.item.describe}">
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">系统关键字</label>
+    <div class="layui-input-inline">
+      <input type="text" class="layui-input" name="keyword" value="{$data.item.keyword}">
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">联系方式</label>
+    <div class="layui-input-inline">
+      <input type="text" class="layui-input" name="contact_way"  maxlength="11" value="{$data.item.contact_way}">
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">技术支持</label>
+    <div class="layui-input-inline">
+      <input type="text" class="layui-input" name="support" value="{$data.item.support}">
+    </div>
+  </div>
+</form>	
+<div class="layui-form-item">
+  <div class="layui-input-block">
+    <button class="layui-btn"  onclick="save_site()">提交</button>
+  </div>
+</div>
+{include file="common/foot"/}
+<script type="text/javascript">
+    function save_site(){
+     $.post("{:url('Panel/save_site')}",$('form').serialize(),function(res){
+     	if(res.code>0){
+     		layer.msg(res.msg,{icon:2});
+     	}else{
+     		layer.msg(res.msg,{icon:1});
+     		setTimeout(function(){window.location.reload();},1000);
+     	}
+     },'json');
+  }
+</script>

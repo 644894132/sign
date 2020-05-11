@@ -1,0 +1,84 @@
+{include file="common/head"/}
+<div class="layui-fluid" style="padding: 0px;">
+    <canvas id="particle"></canvas>
+    <div class="layui-form layui-form-pane layui-admin-login">
+      <div class="layui-admin-login-header">
+        <h1>后台登陆</h1>
+      </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label"><i class="layui-icon layui-icon-username"></i></label>
+      <div class="layui-input-block">
+        <input class="layui-input" id="Account" type="text"  placeholder="请输入用户名" autocomplete="off">
+      </div>
+    </div> 
+    <div class="layui-form-item">
+      <label class="layui-form-label"><i class="layui-icon">&#xe673;</i></label>
+      <div class="layui-input-block">
+        <input class="layui-input" id="PassWord" type="password"  placeholder="请输入密码" autocomplete="off">
+      </div>
+     </div>
+          
+      <div class="layui-form-item">
+        <label class="layui-form-label"><i class="layui-icon">&#xe679;</i></label>
+         <div class="layui-input-inline">
+          <input class="layui-input" id="verifcode" type="text"  placeholder="请输入验证码">              
+         </div>
+         <img src="{:captcha_src()}" id="img"  onclick="reloadImg()">
+       </div>
+       <br>
+       <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-fluid"  lay-filter="register" lay-submit onclick="dologin()"><i class="layui-icon layui-icon-ok-circle"></i>登录</button>
+       </div><br>
+       <!--底部-->
+       <div class="layui-footer">© 这个网站有温度</div>
+  </div>
+</div>
+{include file="common/foot"/} 
+<script> 
+  //不刷新页面,重新刷新验证码
+   function reloadImg(){
+      //math.random随机产生随机数
+    $('#img').attr('src','{:captcha_src()} ?rand ='+Math.random()); 
+   } 
+    //登录
+   function dologin(){
+   	//获取用户信息
+   	var Account =$.trim($('#Account').val());
+   	var PassWord = $('#PassWord').val();
+   	var verifcode =$.trim($('#verifcode').val());
+
+   	//判断用户名是否填写
+   	if(Account ==''){
+   		layer.alert('用户名不能为空',{icon:6});
+   		return;
+   	}
+   	//判断密码是否为空
+   	if(PassWord ==''){
+   		layer.alert('密码不能为空',{icon:6});
+   		return;
+   	}
+   	//验证码不能为空
+   	if(verifcode ==''){
+   		layer.alert('验证码不能为空',{icon:6});
+   		return;
+   	}
+      //将数据提交至后台$.post(URL,数据的键值对,回调函数)
+      $.post("{:url('Account/dologin')}",{'Account':Account,'PassWord':PassWord,'verifcode':verifcode},function(res){
+      	//判断
+      	if(res.code>0){
+            //验证码输入错误之后,自动刷新
+            reloadImg();
+      		//失败
+      		layer.alert(res.msg,{icon:6});
+      	}else{
+      		//成功
+      		layer.msg(res.msg);
+      		//跳转页面
+      		setTimeout(function(){window.location.href ="{:url('Home/index')}"},1000);
+      	}
+      },'json');
+   }
+  var particle = new Particle('#particle', {
+      effect: 'line'
+   });
+</script>

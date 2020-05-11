@@ -1,0 +1,134 @@
+{include file="common/head"/}
+<div class="layui-form-item top">
+<div class="header">
+  <span>用户信息</span>
+  {if condition="$permission eq 1"}
+  <button class="layui-btn" style="float:right;" onclick="update()">更新</button>
+  {else /}
+  {/if}
+  <div></div>
+</div><br>
+<div class="layui-form layui-form-pane" style="float:left;">
+<div class="layui-form-item">
+<label class="layui-form-label" style="margin-left:30px;">快捷查询</label>
+<div class="layui-input-inline">
+ <input type="text" class="layui-input" value="{$data.seek}" id="seek" style="width:320px;" autocomplete="on" placeholder="请输入账号/姓名/身份证">
+</div>
+<button class="layui-btn" type="button" style="margin-left:150px;" onclick="searchs()"><i class="layui-icon">&#xe615;</i>搜索</button>
+</div>  
+</div>
+</div>
+</div><br><br><br><br><br><hr>
+<form class="layui-form"> 
+<table class="layui-table">
+  <thead>
+   <tr>
+     <td>账号</td>
+     <td>姓名</td>
+     <td>性别</td>
+     <td>身份证</td>
+     <td>角色</td>
+     {if condition="$permission eq 1"}
+       <td>状态</td>
+       <td>操作</td>
+     {elseif  condition="$permission eq 4"}
+       <td>状态</td>
+       <td>操作</td>
+     {/if}
+   </tr>
+  </thead>
+  <thead>
+  {volist name="data.data.lists" id="vo"}
+    <tr>
+     <td>{$vo.Account}</td>
+     <td>{$vo.Name}</td>
+     <td>{$vo.Sex==1?'男':'女'}</td>
+     <td>{$vo.ID2}</td>
+     {if condition="$vo.Roles2Binary eq 1"}
+      <th style="color:#FF00FF">超级管理员</th>
+      {elseif condition="$vo.Roles2Binary eq 2"}
+      <th style="color:#DB7093">管理员</th>
+      {elseif condition="$vo.Roles2Binary eq 3"}
+      <th>普通用户</th>
+      {elseif condition="$vo.Roles2Binary eq 4"}
+      <th style="color:#FFD700">开发人员</th>
+      {/if}
+      {if condition="$permission eq 1"}     
+        <td>
+         <input type="checkbox" name="zzz" value="{$vo.Account}" lay-skin="switch" lay-filter="switchTest" lay-text="开启|禁用" {if condition='!empty($vo.Status)'}checked{/if}>
+        </td>
+        <td>      
+          <button type="button" class="layui-btn layui-btn-danger" onclick="role_set('{$vo.Account}')">角色设置</button>
+        </td>
+      {elseif condition="$permission eq 4"}
+        <td>
+          <input type="checkbox" name="zzz" value="{$vo.Account}" lay-skin="switch" lay-filter="switchTest" lay-text="开启|禁用" {if condition='!empty($vo.Status)'}checked{/if}>
+       </td>
+       <td>      
+          <button type="button" class="layui-btn layui-btn-danger" onclick="role_set('{$vo.Account}')">角色设置</button>
+       </td>
+      {/if}
+    </tr>
+  {/volist}
+  </thead>  
+</table> 
+</form>
+<div id="pages" style="text-align:center"></div> 
+{include file="common/foot"/}
+<script type="text/javascript">
+  //引用layui主键
+  layui.use(['layer','laypage'],function(){
+    layer =layui.layer;
+    //引用jquery
+     $ =layui.jquery;
+     laypage =layui.laypage;
+
+     laypage.render({
+        elem: 'pages' //注意，这里的 test1 是 ID，不用加 # 号
+        ,count:{$data.data.total}
+        ,limit:{$data.pageSize}
+        ,curr:{$data.page}
+        ,jump: function(obj, first){                
+          //首次不执行
+            if(!first){
+              //实现搜索跳转和分页的统一
+              searchs(obj.curr);
+            }
+          }
+      });
+  });
+    //搜索
+   function searchs(curpage){
+    //消除第一行空格
+    var seek =$.trim($('#seek').val());
+    //有wd就加载至分页后面
+    var url ="{:url('Panel/user_info')}?page="+curpage;
+    //var_dump(url);
+    if(seek){
+      //将搜索到的内容拼接至分页后面
+      url+='&seek='+seek;
+    }
+    //页面跳转，搜索和分页跳转的统一
+    window.location.href =url;
+}
+   //更新
+   function update(){
+    setTimeout(function(){window.location.href="{:url('Panel/user_info')}";},500);
+   }
+     //角色设置
+      function role_set(Account){
+        //iframe层
+        layer.open({
+          //弹框样式
+          type: 2,
+          title:'基本设置', //
+          //shadeClose: true,
+          //弹框阴影色度
+          shade: 0.8,
+          //弹框宽高
+          area: ['500px', '500px'],
+          //URL地址
+          content: '{:url("Panel/role_set")}?Account='+Account //iframe的url  
+       });
+     }
+</script>

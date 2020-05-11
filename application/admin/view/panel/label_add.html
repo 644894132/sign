@@ -1,0 +1,67 @@
+{include file="common/head"/}
+    <form class="layui-form">
+   <input type="hidden" name="id" value="{$data.item.id}">
+    <div class="layui-layout layui-layout-admin">  
+     <div>   
+       <table>      
+          <thead>
+             <tr>
+               <td>
+                <div class="layui-form-item">
+                 <label class="layui-form-label">标签名称</label>
+                <div class="layui-input-inline">
+                 <input type="text" name="labels" class="layui-input" placeholder="请输入标签名称" value="{$data.item.labels}">
+                </div> 
+                </div>
+               </td>             
+             </tr>
+          </thead>
+           <thead>
+             <tr>
+               <td>
+                <div class="layui-form-item">
+                  <label class="layui-form-label">所属角色</label>
+                  <div class="layui-input-inline">                  
+                  <select name="Role"> 
+                  {volist name="res" id="vo"} 
+                    <option value="{$vo.title}">{$vo.title}</option>
+                  {/volist}  
+                  </select>
+                  </div> 
+                </div>
+               </td>             
+             </tr>
+          </thead>
+       </table> 
+        <div class="layui-form-item">
+         <button type="button" class="layui-btn layui-btn-radius layui-btn-normal" style="margin-left:120px" onclick="save()">保存</button>
+        </div>              
+     </div>
+    </div>
+  </form>  
+{include file="common/foot"/}
+<script type="text/javascript">
+      //保存
+   function save(){
+      //获取数据
+      var id =parseInt($('input[name="id"]').val());
+      var labels =$.trim($('input[name="labels"]').val());
+      var count =$.trim($('input[name="count"]').val());
+
+     //判断
+      if(labels ==''){
+        layer.alert('请输入用户名',{icon:2});
+        return;
+      }    
+      //提交
+      $.post("{:url('Panel/save_label')}",$('form').serialize(),function(res){
+         if(res.code >0){
+            layer.alert(res.msg,{icon:2});
+         }else{
+            layer.msg(res.msg);
+            //页面跳转
+            setTimeout(function(){parent.window.location.reload();},1000);
+         }
+      },'json');
+   }
+</script>

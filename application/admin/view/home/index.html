@@ -1,0 +1,158 @@
+{include file="common/head"/}
+       <!-- 头部 -->
+     <div class="layui-layout layui-layout-admin">
+      <div class="layui-header"> 
+       <div class="layui-logo">{$data.names}</div>
+        <ul class="layui-nav layui-layout-left" lay-filter="leftmenu">   
+		    <li class="layui-nav-item">
+				 <a href="javascript:;" src="/admin.php/admin/Panel/user_info" onclick="menuFire(this)" title="主页"><i class="layui-icon layui-icon-home"></i></a>
+			  </li>       
+		   </ul>
+		    <!--头部右侧导航-->
+    		<ul class="layui-nav layui-layout-right" lay-filter="rightmenu">
+    			<li class="layui-nav-item">
+    			 <a href="javascript:;">
+            <img src="__STATIC__/plugins/img/songsong.jpg" class="layui-nav-img">
+           </a>
+  			    <dl class="layui-nav-child">
+  			      <dd><a href="javascript:;" onclick="userinfo(this)">基本资料</a></dd>	
+              <dd><a href="javascript:;" onclick="update_pwd(this)">修改密码</a></dd>	      
+  			      <dd><a href="javascript:;" onclick="quit(this)">退出</a></dd>			      
+  			    </dl>
+    			</li>
+    		</ul>
+      </div>
+      <!-- 左侧导航 -->
+    <div class="menu" id="menu">
+     <div class="layui-collapse ">      
+       <ul class="layui-nav layui-nav-tree" lay-filter="test">
+        {volist name="menus" id="vo"}
+         <li class="layui-nav-item layui-nav-itemed">
+          <a href="javascript:;" onclick="menuFire(this)" style="text-align:center"><h2>{$vo.title}</h2></a>
+           <?php if (isset($vo['children']) && $vo['children']) {?>
+            <dl class="layui-nav-child">
+             {volist name="vo.children" id="cvo"}
+              <dd><a href="javascript:;" style="text-align:center" onclick="menuFire(this)" src="/admin.php/admin/{$cvo.controller}/{$cvo.method}">{$cvo.title}</a></dd>
+             {/volist}
+            </dl>
+           <?php }?>
+         </li>
+         {/volist}
+       </ul>
+       
+
+     <!-- <li class="layui-nav-item"><a href="javascript:;" onclick="menuFire(this)" src="/admin.php/admin/Users/index" style="color:#00FFFF"><i class="layui-icon">&#xe770;</i>&nbsp;&nbsp;<span>用户列表</span></a></li>          
+            <li class="layui-nav-item"><a href="javascript:;" onclick="menuFire(this)" src="/admin.php/admin/Label/index"  style="color:#00FFFF"><i class="layui-icon">&#xe857;</i>&nbsp;&nbsp;<span>标签管理</span></a></li>
+            <li class="layui-nav-item layui-nav-itemed">
+       <a href="javascript:;" onclick="menuFire(this)"><i class="layui-icon">&#xe63a;</i>&nbsp;&nbsp;<span>会议管理</span></a>
+       <dl class="layui-nav-child">
+         <dd><a href="javascript:;" onclick="menuFire(this)" src="/admin.php/admin/Meeting/index"><span>会议列表</span></a></dd>
+         <dd><a href="javascript:;" onclick="menuFire(this)" src="/admin.php/admin/Meeting/meeting_sign"><span>会议签到</span></a></dd>
+       </dl>
+            </li>
+            <li class="layui-nav-item layui-nav-itemed">
+       <a href="javascript:;"><i class="layui-icon">&#xe60e;</i>&nbsp;&nbsp;<span>数据统计</span></a>
+       <dl class="layui-nav-child">
+         <dd><a href="javascript:;" onclick="menuFire(this)" src="/admin.php/admin/Gather/conferee_statistics"><span>与会人数统计</span></a></dd>
+       </dl>
+            </li>
+      
+            <li class="layui-nav-item layui-nav-itemed">
+       <a href="javascript:;" onclick="menuFire(this)"><i class="layui-icon">&#xe62c;</i>&nbsp;&nbsp;<span>统计图</span></a>
+       <dl class="layui-nav-child">
+         <dd><a href="javascript:;" onclick="menuFire(this)" src="/admin.php/admin/Cartogram/conferee"><span>参会人员统计</span></a></dd>
+         <dd><a href="javascript:;" onclick="menuFire(this)" src="/admin.php/admin/Cartogram/meeting_statistics"><span>会议次数统计</span></a></dd>
+         <dd><a href="javascript:;" onclick="menuFire(this)" src="/admin.php/admin/Cartogram/classify"><span>所属学院统计</span></a></dd>
+       </dl>
+            </li> -->
+            <!-- <li class="layui-nav-item layui-nav-itemed">
+             <a href="javascript:;" onclick="menuFire(this)"><i class="layui-icon">&#xe672;</i>&nbsp;&nbsp;<span>权限管理</span></a>
+             <dl class="layui-nav-child">
+               <dd><a href="javascript:;" onclick="menuFire(this)" src="/admin.php/admin/Jurisdiction/role_manage"><span>角色管理</span></a></dd>
+               <dd><a href="javascript:;" onclick="menuFire(this)" src="/admin.php/admin/Jurisdiction/menus"><span>菜单管理</span></a></dd>
+             </dl>
+            </li> -->
+      
+            <!-- <li class="layui-nav-item">
+                   <a  href="javascript:;" onclick="menuFire(this)" src="/admin.php/admin/Panel/index" style="color:#00FFFF"><i class="layui-icon" >&#xe716;</i>&nbsp;&nbsp;<span>系统设置</span></a>
+            </li> -->
+   </div>
+ </div> 
+</div>   
+	<!-- 主操作界面 -->	
+	<div class=" main">
+   <iframe src="{:url('Home/welcome')}" id="iframeID" frameborder="no" scrolling="0"></iframe>
+  </div>
+{include file="common/foot"/}
+<script type="text/javascript">	
+layui.use(['layer', 'element'],function(){
+       $ =layui.jquery;
+       layer = layui.layer;
+       element = layui.element;
+       //调用函数,设置宽高
+       resetMenuHeight();
+});
+//设置左侧菜单栏高度
+  function resetMenuHeight(){
+      var height =document.documentElement.clientHeight -50;
+      $('#menu').height(height);
+   }
+   $(function(){
+    $("#iframeID").on("load", function(){
+      var height =parent.document.documentElement.clientHeight -53;
+      $(this).parent('div').height(height);
+    });
+   });
+  /*//重新设置主操作页面高度
+  function resetMainHeight(obj){
+    var height =parent.document.documentElement.clientHeight -53;
+    $(obj).parent('div').height(height);
+  }*/
+  //基本资料
+    function userinfo(id){
+      //iframe层
+      layer.open({
+        //弹框样式
+        type: 2,
+        title:'基本资料', //
+        //shadeClose: true,
+        //弹框阴影色度
+        shade: 0.5,
+        //弹框宽高
+        area: ['800px', '700px'],
+        //URL地址
+        content: "{:url('Home/userinfo')}" //iframe的url  
+     });
+ }  
+ //修改密码
+    function update_pwd(Account){
+      //iframe层
+      layer.open({
+        //弹框样式
+        type: 2,
+        title:'修改密码', //
+        //shadeClose: true,
+        //弹框阴影色度
+        shade: 0.5,
+        //弹框宽高
+        area: ['400px', '300px'],
+        //URL地址
+        content: "{:url('Home/update_pwd')}" //iframe的url  
+     });
+ }  
+   //菜单退出事件
+    function quit(){
+        layer.confirm('确认要退出吗?', {
+            icon:3,
+            btn: ['确定','取消'] //按钮
+          }, function(){
+            $.post("{:url('Account/quit')}",function(res){
+        if(res.code >0){
+          layer.msg(res.msg,{'icon':2});
+        }else{
+          layer.msg(res.msg,{'icon':1});
+          setTimeout(function(){parent.window.location.reload();},1000)}
+      },'json');
+    });
+  }
+</script>

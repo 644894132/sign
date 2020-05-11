@@ -1,0 +1,79 @@
+{include file="common/head"/}
+<style type="text/css">
+  .top{width: 100%;height: 60px;background: white;z-index: 9999;position: fixed;top: 0;}
+</style>
+<div class="layui-form-item top">
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="layui-btn layui-btn-radius layui-btn-disabled"><b style="color:#000000">邀请名单</b></span>
+<!-- 传递一个参数,不为空就显示'删除按钮' -->
+{if condition="$permission eq 1"}
+<a class="layui-btn layui-btn-lg" style="float:right;margin-right:20px" href="{:url('Meeting/download',['MeetingID'=>$MeetingID])}"><i class="layui-icon">&#xe601;</i>生成Excel文件</a> 
+{elseif condition="$permission eq 2"}
+<a class="layui-btn layui-btn-lg" style="float:right;margin-right:20px" href="{:url('Meeting/download',['MeetingID'=>$MeetingID])}"><i class="layui-icon">&#xe601;</i>生成Excel文件</a>
+{/if}
+</div><br><br><br><br><hr>
+<table class="layui-table">
+  <thead>
+   <tr>
+    <td>个人编号</td>
+    <td>会议编号</td>
+    <td>姓名</td>
+    <td>性别</td>
+    {if condition="$permission eq 1"}
+    <td>状态</td>
+    {else /}
+    {/if}
+   </tr>
+  </thead> 
+  <thead>
+   {volist name="data.lists" id="vo"}
+   <tr>
+    <td>{$vo.Account}</td>
+    <td>{$vo.number}</td>
+    <!-- <td>{$vo.ClassNum}</td> -->
+    <td>{$vo.Name}</td>
+    <td>{$vo.Sex==1?'男':'女'}</td>
+    {if condition="$permission eq 1"}
+    {if condition="$vo.sign_status eq 0"}
+    <td style="color:#C0C0C0">缺席</td>
+    {elseif condition="$vo.sign_status eq 1"}
+    <td style="color:green">已签到</td>
+    {elseif condition="$vo.sign_status eq 2"}
+    <td style="color: red;">已请假</td>
+    {/if}
+    {else /}
+    {/if}
+   </tr>
+   {/volist}
+  </thead>
+</table>
+<div id="pages" style="text-align:center"></div>  
+{include file="common/foot"/}           
+<script type="text/javascript"> 
+      //删除
+    function del(id,status){
+      var arr = [];
+      $("input.checkAll").each(function(index){
+        if ($(this).attr("checked")) {
+          $val = $(this).parent().next().text();
+          arr[index] = $val;
+       }
+    });
+    //询问框
+    layer.confirm('确认要删除吗?', {
+      icon :8,
+      btn: ['确定','取消'] //按钮
+    }, function(){
+      //提交数据，跳转页面
+      $.post('{:url("Meeting/remove")}',{'checkAll':arr, 'id':id},function(res){
+        if(res.code>0){
+            layer.alert(res.msg,{icon:2});
+        }else{
+            layer.msg(res.msg);
+            setTimeout(function(){window.location.reload();},1000);
+        }
+      },'json');
+    });
+  }     
+</script>
+
